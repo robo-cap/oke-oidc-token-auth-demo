@@ -21,6 +21,7 @@ jobs:
       - name: Create OIDC Token
         id: create-oidc-token
         run: |
+          echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
           AUDIENCE="oke-kubernetes-cluster"
           OIDC_URL_WITH_AUDIENCE="$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE"
           ID=$(curl \
