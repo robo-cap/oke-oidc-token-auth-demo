@@ -1,4 +1,4 @@
-name: oke-oidc
+name: OKE-OIDC
 
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
@@ -21,20 +21,19 @@ jobs:
       - name: Create OIDC Token
         id: create-oidc-token
         run: |
-          set -x
           AUDIENCE="oke-kubernetes-cluster"
           OIDC_URL_WITH_AUDIENCE="$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$AUDIENCE"
-          ID=$(curl \
+          IDTOKEN=$(curl \
             -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
             -H "Accept: application/json; api-version=2.0" \
             "$OIDC_URL_WITH_AUDIENCE" | jq -r .value)
-          echo "${ID}"
-          echo "idToken=${ID}" >> $GITHUB_OUTPUT
+          echo "::add-mask::${IDTOKEN}"
+          echo "idToken=${IDTOKEN}" >> $GITHUB_OUTPUT
 
       - name: Check Permissions in Kubernetes
         run: |
           kubectl \
-          --token=$ \
+          --token=${{ steps.create-oidc-token.outputs.IDTOKEN }} \
           --server="https://132.145.253.43:6443" \
           --insecure-skip-tls-verify \
           auth can-i --list
