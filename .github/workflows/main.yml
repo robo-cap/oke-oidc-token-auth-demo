@@ -30,6 +30,10 @@ jobs:
           echo "::add-mask::${IDTOKEN}"
           echo "idToken=${IDTOKEN}" >> $GITHUB_OUTPUT
 
+          # Display decoded token content
+          echo "Decoded OIDC Token:"
+          echo "$IDTOKEN" | jq -R 'split(".") | .[0], .[1] | @base64d | fromjson'
+
       - name: Check Permissions in Kubernetes
         run: |
           kubectl \
