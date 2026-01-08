@@ -32,7 +32,7 @@ jobs:
 
           # Display decoded token content
           echo "Decoded OIDC Token:"
-          echo "$IDTOKEN" | jq -R 'split(".") | .[0], .[1] | @base64d | fromjson'
+          echo "$IDTOKEN" | jq -R 'split(".") | .[0], .[1], .[2] | @base64d | fromjson'
 
       - name: Check Permissions in Kubernetes
         run: |
